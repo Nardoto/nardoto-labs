@@ -210,31 +210,35 @@
                     }, { merge: true });
                 }
 
-                // Obter ID Token para enviar para a extensão
+                // Obter ID Token (Firebase) para enviar para a extensão
                 const idToken = await user.getIdToken();
 
                 showStatus('✅ Login realizado com sucesso! Retornando para a extensão...', 'success');
 
-                console.log('🔍 DEBUG - Tentando redirecionar para extensão...');
+                console.log('✅ DEBUG - Enviando token para extensão via postMessage');
 
-                // Pegar redirect URL da query string
-                const urlParams = new URLSearchParams(window.location.search);
-                const redirectUrl = urlParams.get('redirect');
+                // Enviar token para a extensão via postMessage
+                if (window.opener) {
+                    window.opener.postMessage({
+                        type: 'NARDOTO_LABS_AUTH',
+                        token: idToken,  // Firebase ID Token
+                        user: {
+                            uid: user.uid,
+                            email: user.email,
+                            displayName: user.displayName || '',
+                            photoURL: user.photoURL || ''
+                        }
+                    }, '*');
 
-                if (redirectUrl) {
-                    // Redirecionar para a extensão com os dados
-                    const successUrl = new URL(redirectUrl);
-                    successUrl.searchParams.set('token', idToken);
-                    successUrl.searchParams.set('uid', user.uid);
-                    successUrl.searchParams.set('email', user.email);
-                    successUrl.searchParams.set('displayName', user.displayName || '');
-                    successUrl.searchParams.set('photoURL', user.photoURL || '');
+                    console.log('✅ DEBUG - Token enviado! Fechando popup em 2 segundos...');
 
-                    console.log('✅ DEBUG - Redirecionando para:', successUrl.toString());
-                    window.location.href = successUrl.toString();
+                    // Fechar popup após 2 segundos
+                    setTimeout(() => {
+                        window.close();
+                    }, 2000);
                 } else {
-                    console.error('❌ DEBUG - Redirect URL não encontrado!');
-                    showStatus('❌ Erro: Redirect URL não configurado', 'error');
+                    console.error('❌ DEBUG - window.opener não disponível!');
+                    showStatus('❌ Erro: Não foi possível comunicar com a extensão', 'error');
                 }
 
             } catch (error) {

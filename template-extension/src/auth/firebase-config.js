@@ -114,7 +114,7 @@ class FirebaseClient {
                 email: userData.email,
                 displayName: userData.displayName,
                 photoURL: userData.photoURL,
-                accessToken: token
+                idToken: token  // Firebase ID Token (não Google Access Token)
               };
 
               // Salvar sessão
@@ -251,7 +251,7 @@ class FirebaseClient {
         email: user.email,
         displayName: user.displayName,
         photoURL: user.photoURL,
-        accessToken: user.accessToken,
+        idToken: user.idToken,  // Firebase ID Token
         savedAt: Date.now()
       }
     });
@@ -267,7 +267,7 @@ class FirebaseClient {
       if (session) {
         console.log("🔍 DEBUG - loadSession: UID:", session.uid);
         console.log("🔍 DEBUG - loadSession: Email:", session.email);
-        console.log("🔍 DEBUG - loadSession: HasToken:", !!session.accessToken);
+        console.log("🔍 DEBUG - loadSession: HasToken:", !!(session.idToken || session.accessToken));
         console.log("🔍 DEBUG - loadSession: SavedAt:", new Date(session.savedAt));
       }
 
@@ -276,10 +276,10 @@ class FirebaseClient {
         return null;
       }
 
-      // Verificar se sessão não expirou (7 dias)
-      const sevenDays = 7 * 24 * 60 * 60 * 1000;
-      if (Date.now() - session.savedAt > sevenDays) {
-        console.log("⚠️ Sessão expirada");
+      // Verificar se sessão não expirou (1 hora para segurança, pois Firebase ID Token expira em 1h)
+      const oneHour = 60 * 60 * 1000;
+      if (Date.now() - session.savedAt > oneHour) {
+        console.log("⚠️ Token expirado (1 hora) - faça login novamente");
         await chrome.storage.local.remove('firebase_session');
         return null;
       }
@@ -290,7 +290,7 @@ class FirebaseClient {
         email: session.email,
         displayName: session.displayName,
         photoURL: session.photoURL,
-        accessToken: session.accessToken
+        idToken: session.idToken || session.accessToken  // Compatibilidade com versões antigas
       };
 
     } catch (error) {
@@ -303,7 +303,7 @@ class FirebaseClient {
   async getDocument(path) {
     try {
       console.log("🔍 DEBUG - getDocument:", path);
-      console.log("🔍 DEBUG - currentUser:", this.currentUser ? { uid: this.currentUser.uid, hasToken: !!this.currentUser.accessToken } : null);
+      console.log("🔍 DEBUG - currentUser:", this.currentUser ? { uid: this.currentUser.uid, hasToken: !!this.currentUser.idToken } : null);
 
       const url = `https://firestore.googleapis.com/v1/projects/${this.config.projectId}/databases/(default)/documents/${path}`;
 
@@ -311,12 +311,13 @@ class FirebaseClient {
         'Content-Type': 'application/json'
       };
 
-      // Adicionar token de autenticação se disponível
-      if (this.currentUser && this.currentUser.accessToken) {
-        headers['Authorization'] = `Bearer ${this.currentUser.accessToken}`;
-        console.log("🔍 DEBUG - Token adicionado ao header");
+      // IMPORTANTE: Usar Firebase ID Token (obrigatório para Firestore)
+      if (this.currentUser && this.currentUser.idToken) {
+        headers['Authorization'] = `Bearer ${this.currentUser.idToken}`;
+        console.log("🔍 DEBUG - Firebase ID Token adicionado ao header");
       } else {
-        console.warn("⚠️ DEBUG - Sem token! CurrentUser:", this.currentUser);
+        console.error("❌ Firebase ID Token ausente! Faça login novamente.");
+        throw new Error("Missing Firebase ID Token - faça login novamente");
       }
 
       console.log("🔍 DEBUG - Fazendo fetch para Firestore...");
@@ -331,6 +332,11 @@ class FirebaseClient {
         if (response.status === 404) {
           console.log("ℹ️ DEBUG - Documento não encontrado (404)");
           return { exists: false };
+        }
+        if (response.status === 401) {
+          console.error("❌ Token expirado ou inválido (401) - limpando sessão");
+          await this.signOut();
+          throw new Error("Token expirado - faça login novamente");
         }
         const errorText = await response.text();
         console.error("❌ DEBUG - Erro do Firestore:", response.status, errorText);
@@ -365,9 +371,11 @@ class FirebaseClient {
         'Content-Type': 'application/json'
       };
 
-      // Adicionar token de autenticação se disponível
-      if (this.currentUser && this.currentUser.accessToken) {
-        headers['Authorization'] = `Bearer ${this.currentUser.accessToken}`;
+      // Adicionar Firebase ID Token
+      if (this.currentUser && this.currentUser.idToken) {
+        headers['Authorization'] = `Bearer ${this.currentUser.idToken}`;
+      } else {
+        throw new Error("Missing Firebase ID Token - faça login novamente");
       }
 
       const response = await fetch(url, {
@@ -377,6 +385,10 @@ class FirebaseClient {
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          await this.signOut();
+          throw new Error("Token expirado - faça login novamente");
+        }
         throw new Error(`Firestore SET error: ${response.status}`);
       }
 
@@ -399,9 +411,11 @@ class FirebaseClient {
         'Content-Type': 'application/json'
       };
 
-      // Adicionar token de autenticação se disponível
-      if (this.currentUser && this.currentUser.accessToken) {
-        headers['Authorization'] = `Bearer ${this.currentUser.accessToken}`;
+      // Adicionar Firebase ID Token
+      if (this.currentUser && this.currentUser.idToken) {
+        headers['Authorization'] = `Bearer ${this.currentUser.idToken}`;
+      } else {
+        throw new Error("Missing Firebase ID Token - faça login novamente");
       }
 
       const response = await fetch(url, {
@@ -411,6 +425,10 @@ class FirebaseClient {
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          await this.signOut();
+          throw new Error("Token expirado - faça login novamente");
+        }
         throw new Error(`Firestore UPDATE error: ${response.status}`);
       }
 

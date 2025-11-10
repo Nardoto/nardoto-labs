@@ -164,6 +164,9 @@ async function handleOrderPaid(event) {
         const usersRef = db.collection('users');
         const snapshot = await usersRef.where('email', '==', customerEmail).get();
 
+        // Extrair productId antes de usar (necessário para ambos os casos)
+        const productId = Product?.product_id || Product?.id || 'unknown';
+
         if (snapshot.empty) {
             console.log(`⚠️ Usuário não existe: ${customerEmail}`);
             console.log('💾 Criando ativação pendente...');
