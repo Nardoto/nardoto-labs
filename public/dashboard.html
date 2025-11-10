@@ -118,10 +118,38 @@
             border: 2px solid #e1e4e8;
             display: flex;
             gap: 1rem;
+            align-items: center;
+            position: relative;
         }
 
         .extension-item.locked {
             opacity: 0.6;
+        }
+
+        .extension-install-btn {
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .extension-install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .extension-install-btn svg {
+            flex-shrink: 0;
         }
 
         .extension-icon-lg {
@@ -196,14 +224,22 @@
     <div class="dashboard">
         <div class="dashboard-container">
             <div class="dashboard-header">
-                <div class="user-info">
-                    <img id="userAvatar" src="" alt="" class="user-avatar">
-                    <div class="user-details">
-                        <h2 id="userName">Carregando...</h2>
-                        <span class="user-plan" id="userPlanBadge">FREE</span>
+                <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; width: 100%;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <img src="logo-nardoto.png" alt="Nardoto Labs" style="height: 48px; width: 48px; object-fit: contain;">
+                        <h1 style="margin: 0; font-size: 1.5rem; font-weight: 700;">Nardoto Labs</h1>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 2rem; margin-left: auto; flex-wrap: wrap;">
+                        <div class="user-info">
+                            <img id="userAvatar" src="" alt="" class="user-avatar">
+                            <div class="user-details">
+                                <h2 id="userName">Carregando...</h2>
+                                <span class="user-plan" id="userPlanBadge">FREE</span>
+                            </div>
+                        </div>
+                        <button id="logoutBtn" class="logout-btn">🚪 Sair</button>
                     </div>
                 </div>
-                <button id="logoutBtn" class="logout-btn">🚪 Sair</button>
             </div>
 
             <div id="trialWarning" class="trial-warning" style="display: none;">
@@ -297,7 +333,13 @@
         const db = getFirestore(app);
 
         const extensions = [
-            { id: 'veo3-automator', name: 'VEO3 Automator', icon: '🎬', requiredFeature: 'veo3-automator' },
+            {
+                id: 'veo3-automator',
+                name: 'VEO3 Automator',
+                icon: '🎬',
+                requiredFeature: 'veo3-automator',
+                chromeStoreUrl: 'https://chromewebstore.google.com/detail/google-labs-automator/ibldaclgfijocpbkmoggknmkebbbldcb?authuser=0&hl=pt-BR'
+            },
             { id: 'wisk-automator', name: 'Wisk Automator', icon: '🎨', requiredFeature: 'wisk-automator' },
             { id: 'tradutor-ai-unlimited', name: 'Tradutor AI Ilimitado', icon: '🌐', requiredFeature: 'tradutor-ai-unlimited' }
         ];
@@ -371,6 +413,14 @@
                                 ${isActive ? '✅ Ativo' : '🔒 Bloqueado'}
                             </span>
                         </div>
+                        ${ext.chromeStoreUrl && isActive ? `
+                            <a href="${ext.chromeStoreUrl}" target="_blank" class="extension-install-btn" title="Instalar Extensão">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                                </svg>
+                                Instalar
+                            </a>
+                        ` : ''}
                     </div>
                 `;
             }).join('');
