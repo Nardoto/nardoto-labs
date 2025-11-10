@@ -1,0 +1,97 @@
+═══════════════════════════════════════════════════════════════════
+  TEMPLATE - EXTENSÃO COM AUTENTICAÇÃO NARDOTO LABS
+═══════════════════════════════════════════════════════════════════
+
+📋 PASSO A PASSO PARA CRIAR NOVA EXTENSÃO:
+
+1️⃣ COPIAR PASTA TEMPLATE
+   - Copie toda a pasta "template-extension"
+   - Renomeie para o nome da sua extensão
+   - Ex: "wisk-automator", "tradutor-ai", etc
+
+2️⃣ EDITAR manifest.json
+   📝 Substituir:
+   - "SUA_EXTENSAO_NOME" → Nome real da extensão
+   - "https://SEU_SITE.com/*" → URL onde funciona
+   - Adicionar ícones na pasta icons/
+
+3️⃣ EDITAR src/auth/firebase-config.js
+   📝 Substituir NA ÚLTIMA LINHA:
+   - window.firebaseTEMPLATE → window.firebaseSUAEXTENSAO
+
+   Exemplos:
+   - window.firebaseWisk
+   - window.firebaseTradutor
+   - window.firebaseImager
+
+4️⃣ EDITAR src/auth/auth-manager.js
+   📝 Substituir NO TOPO (linhas 6-7):
+   - EXTENSION_ID = 'template-extension' → 'sua-extensao-id'
+
+   📝 Substituir NA ÚLTIMA LINHA:
+   - window.authTEMPLATE → window.authSUAEXTENSAO
+   - window.firebaseTEMPLATE → window.firebaseSUAEXTENSAO
+
+   ⚠️ Os nomes devem BATER com firebase-config.js!
+
+5️⃣ EDITAR src/background/update-handler.js
+   📝 Substituir NA URL (linha ~18):
+   - "Template Extension" → "Nome Real da Extensão"
+
+6️⃣ EDITAR src/core/content.js
+   📝 Substituir TODAS as referências:
+   - window.authTEMPLATE → window.authSUAEXTENSAO
+
+   📝 ADICIONAR SUA LÓGICA na função:
+   - executeMainFunctionality()
+
+   Substitua o console.log por sua automação!
+
+═══════════════════════════════════════════════════════════════════
+
+📊 TABELA DE SUBSTITUIÇÕES RÁPIDA:
+
+┌─────────────────────────────────┬──────────────────────────────┐
+│ PROCURAR                        │ SUBSTITUIR POR               │
+├─────────────────────────────────┼──────────────────────────────┤
+│ SUA_EXTENSAO_NOME               │ Wisk Automator               │
+│ https://SEU_SITE.com/*          │ https://wisk.com/*           │
+│ window.firebaseTEMPLATE         │ window.firebaseWisk          │
+│ window.authTEMPLATE             │ window.authWisk              │
+│ template-extension              │ wisk-automator               │
+│ Template Extension              │ Wisk Automator               │
+└─────────────────────────────────┴──────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════
+
+✅ CHECKLIST FINAL:
+
+[ ] Copiei a pasta e renomeei
+[ ] Editei manifest.json com nome e URLs corretos
+[ ] Editei firebase-config.js (última linha)
+[ ] Editei auth-manager.js (topo + última linha)
+[ ] Editei update-handler.js (nome da extensão)
+[ ] Editei content.js (referências + lógica)
+[ ] Adicionei ícones na pasta icons/
+[ ] Testei: chrome://extensions/ → Carregar sem compactação
+
+═══════════════════════════════════════════════════════════════════
+
+🎯 IDS PARA USAR NO FIRESTORE:
+
+Extensão             | EXTENSION_ID        | Features Array
+---------------------|---------------------|------------------------
+VEO3 Automator       | veo3-automator      | ['veo3-automator']
+Wisk Automator       | wisk-automator      | ['wisk-automator']
+Tradutor AI          | tradutor-ai         | ['tradutor-ai-unlimited']
+Sua Nova Extensão    | sua-nova-extensao   | ['sua-nova-extensao']
+
+═══════════════════════════════════════════════════════════════════
+
+📞 SUPORTE:
+
+- Guia completo: nardoto-labs/GUIA-IMPLEMENTACAO-EXTENSOES.md
+- Admin Panel: https://nardoto-labs.web.app/admin.html
+- Dashboard: https://nardoto-labs.web.app/dashboard.html
+
+═══════════════════════════════════════════════════════════════════

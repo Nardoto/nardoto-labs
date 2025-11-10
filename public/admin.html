@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Nardoto Labs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .users-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        th {
+            background: #f6f8fa;
+            font-weight: 600;
+        }
+
+        .plan-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .plan-free {
+            background: #e1e4e8;
+            color: #586069;
+        }
+
+        .plan-basic {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .plan-vip {
+            background: #ffd700;
+            color: #1a1a1a;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .google-btn {
+            background: white;
+            border: 2px solid #dadce0;
+            border-radius: 12px;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #3c4043;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .google-btn:hover {
+            background: #f8f9fa;
+            border-color: #4285f4;
+            box-shadow: 0 4px 12px rgba(66,133,244,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <h1>Admin - Nardoto Labs</h1>
+            <p style="margin-bottom: 2rem; color: #666;">Faça login para acessar o painel administrativo</p>
+            <button id="loginBtn" class="google-btn">
+                <svg width="18" height="18" viewBox="0 0 18 18">
+                    <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                    <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                    <path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/>
+                    <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+                </svg>
+                Entrar com Google
+            </button>
+        </div>
+    </div>
+
+    <div id="adminPanel" class="admin-container" style="display: none;">
+        <div class="admin-header">
+            <h1>Painel Administrativo</h1>
+            <p>Gerencie usuários e planos do Nardoto Labs</p>
+        </div>
+
+        <div class="users-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Nome</th>
+                        <th>Plano</th>
+                        <th>Pro</th>
+                        <th>Features</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem;">Carregando usuários...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithRedirect, GoogleAuthProvider, getRedirectResult, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, getDocs, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQPGu8l-JQqjHRubcAcYeUK7aIgH7vPIE",
+            authDomain: "nardoto-labs.web.app",
+            projectId: "tradutor-profissional-ai",
+            storageBucket: "tradutor-profissional-ai.firebasestorage.app",
+            messagingSenderId: "943297790089",
+            appId: "1:943297790089:web:75c2fa533bbe1310d2c658"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        // Admins autorizados
+        const AUTHORIZED_ADMINS = ['tharcisionardoto@gmail.com'];
+
+        // Login com redirect (sem problemas de COOP)
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            console.log('🔐 Iniciando login com redirect...');
+            signInWithRedirect(auth, provider);
+        });
+
+        // Verificar resultado do redirect
+        getRedirectResult(auth).then((result) => {
+            if (result) {
+                console.log('✅ Login redirect completo:', result.user.email);
+            }
+        }).catch((error) => {
+            console.error('❌ Erro no redirect:', error);
+        });
+
+        // Monitorar estado de autenticação
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log('👤 Usuário logado:', user.email);
+                if (AUTHORIZED_ADMINS.includes(user.email)) {
+                    console.log('✅ Admin autorizado');
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('adminPanel').style.display = 'block';
+                    loadUsers();
+                } else {
+                    alert('❌ Você não tem permissão de administrador!');
+                    auth.signOut();
+                }
+            } else {
+                console.log('❌ Nenhum usuário logado');
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('adminPanel').style.display = 'none';
+            }
+        });
+
+        // Carregar usuários
+        async function loadUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">Carregando...</td></tr>';
+
+            try {
+                const usersSnapshot = await getDocs(collection(db, 'users'));
+                const users = [];
+
+                usersSnapshot.forEach((doc) => {
+                    users.push({ id: doc.id, ...doc.data() });
+                });
+
+                if (users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">Nenhum usuário encontrado</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = users.map(user => `
+                    <tr>
+                        <td>${user.email || '-'}</td>
+                        <td>${user.displayName || '-'}</td>
+                        <td>
+                            <span class="plan-badge plan-${user.plan || 'free'}">
+                                ${(user.plan || 'free').toUpperCase()}
+                            </span>
+                        </td>
+                        <td>${user.isPro ? '✅' : '❌'}</td>
+                        <td>${(user.features || []).join(', ') || '-'}</td>
+                        <td>
+                            <select onchange="changePlan('${user.id}', this.value)">
+                                <option value="">Mudar plano...</option>
+                                <option value="free">FREE</option>
+                                <option value="basic">BÁSICO</option>
+                                <option value="vip">VIP</option>
+                            </select>
+                        </td>
+                    </tr>
+                `).join('');
+
+            } catch (error) {
+                console.error('❌ Erro ao carregar usuários:', error);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: red;">Erro ao carregar usuários</td></tr>';
+            }
+        }
+
+        // Função global para mudar plano
+        window.changePlan = async function(userId, newPlan) {
+            if (!newPlan || !confirm(`Ativar plano ${newPlan.toUpperCase()} para este usuário?`)) {
+                return;
+            }
+
+            try {
+                const userRef = doc(db, 'users', userId);
+
+                const updateData = {
+                    plan: newPlan,
+                    isPro: newPlan !== 'free',
+                    proActivatedAt: new Date().toISOString(),
+                    proActivatedBy: 'admin_manual'
+                };
+
+                // Definir features baseado no plano
+                if (newPlan === 'vip') {
+                    updateData.features = ['all-features'];
+                } else if (newPlan === 'basic') {
+                    updateData.features = ['veo3-automator', 'wisk-automator', 'tradutor-ai-unlimited'];
+                } else {
+                    updateData.features = [];
+                }
+
+                await updateDoc(userRef, updateData);
+
+                alert(`✅ Plano ${newPlan.toUpperCase()} ativado com sucesso!`);
+                loadUsers();
+
+            } catch (error) {
+                console.error('❌ Erro ao atualizar plano:', error);
+                alert('❌ Erro ao atualizar plano: ' + error.message);
+            }
+        };
+    </script>
+</body>
+</html>

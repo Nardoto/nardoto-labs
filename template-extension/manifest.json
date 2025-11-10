@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "SUA_EXTENSAO_NOME",
+  "version": "1.0.0",
+  "description": "Descrição da sua extensão",
+
+  "permissions": [
+    "storage",
+    "identity"
+  ],
+
+  "host_permissions": [
+    "https://firestore.googleapis.com/*",
+    "https://*.firebaseapp.com/*",
+    "https://SEU_SITE.com/*"
+  ],
+
+  "background": {
+    "service_worker": "src/background/update-handler.js",
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://SEU_SITE.com/*"],
+      "js": [
+        "src/auth/firebase-config.js",
+        "src/auth/auth-manager.js",
+        "src/core/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["src/auth/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

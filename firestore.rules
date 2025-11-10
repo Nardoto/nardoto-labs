@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Função helper para verificar se é admin
+    function isAdmin() {
+      return request.auth != null &&
+             (request.auth.token.email == 'tharcisionardoto@gmail.com' ||
+              request.auth.token.email == 'nardotoengenharia@gmail.com');
+    }
+
+    // Users collection
+    match /users/{userId} {
+      // Admins podem ler todos os usuários
+      allow read: if isAdmin() ||
+                     (request.auth != null && request.auth.uid == userId);
+
+      // Admins podem escrever em qualquer usuário
+      allow write: if isAdmin() ||
+                      (request.auth != null && request.auth.uid == userId);
+    }
+
+    // Pending activations - apenas Cloud Functions
+    match /pending_activations/{docId} {
+      allow read, write: if false;
+    }
+
+    // Admin collection - ninguém tem acesso direto
+    match /admin/{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

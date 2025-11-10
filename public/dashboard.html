@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Nardoto Labs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        .dashboard {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+
+        .user-details h2 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1.5rem;
+        }
+
+        .user-plan {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.5);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid #e1e4e8;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .extensions-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #1a1a1a;
+        }
+
+        .extension-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .extension-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid #e1e4e8;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .extension-item.locked {
+            opacity: 0.6;
+        }
+
+        .extension-icon-lg {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .extension-content h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.125rem;
+        }
+
+        .extension-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-locked {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .upgrade-banner {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .upgrade-banner h3 {
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
+
+        .trial-warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .trial-warning-icon {
+            font-size: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-info {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <div class="user-info">
+                    <img id="userAvatar" src="" alt="" class="user-avatar">
+                    <div class="user-details">
+                        <h2 id="userName">Carregando...</h2>
+                        <span class="user-plan" id="userPlanBadge">FREE</span>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="logout-btn">🚪 Sair</button>
+            </div>
+
+            <div id="trialWarning" class="trial-warning" style="display: none;">
+                <span class="trial-warning-icon">⏰</span>
+                <div>
+                    <strong id="trialText">Seu trial expira em breve!</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem;">Assine um plano para continuar usando todas as extensões.</p>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Plano Atual</div>
+                    <div class="stat-value" id="statPlan">FREE</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Extensões Ativas</div>
+                    <div class="stat-value" id="statExtensions">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Trial Restante</div>
+                    <div class="stat-value" id="statTrial">-</div>
+                </div>
+            </div>
+
+            <div class="extensions-section">
+                <h3>📱 Suas Extensões</h3>
+                <div class="extension-list" id="extensionList">
+                    <!-- Será preenchido via JavaScript -->
+                </div>
+            </div>
+
+            <div id="upgradeBanner" class="upgrade-banner" style="display: none;">
+                <h3>🚀 Upgrade para desbloquear tudo!</h3>
+                <p style="margin-bottom: 2rem; color: #333;">Escolha um plano e tenha acesso ilimitado a todas as extensões.</p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 800px; margin: 0 auto;">
+                    <!-- Plano BÁSICO -->
+                    <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <h4 style="margin: 0 0 1rem 0; color: #667eea; font-size: 1.5rem;">📦 BÁSICO</h4>
+                        <ul style="text-align: left; margin: 1rem 0; padding-left: 1.5rem; color: #333;">
+                            <li>✅ VEO3 Automator</li>
+                            <li>✅ Wisk Automator</li>
+                            <li>✅ Tradutor AI Ilimitado</li>
+                            <li>✅ Suporte prioritário</li>
+                        </ul>
+                        <a href="https://pay.kiwify.com.br/NtnupLV" target="_blank"
+                           style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 1rem; transition: transform 0.2s;">
+                            💳 Assinar BÁSICO
+                        </a>
+                    </div>
+
+                    <!-- Plano VIP -->
+                    <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 3px solid #ffd700;">
+                        <div style="background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); color: #1a1a1a; padding: 0.5rem; border-radius: 6px; font-weight: 700; margin-bottom: 1rem;">
+                            ⭐ MAIS POPULAR
+                        </div>
+                        <h4 style="margin: 0 0 1rem 0; color: #ffd700; font-size: 1.5rem;">👑 VIP</h4>
+                        <ul style="text-align: left; margin: 1rem 0; padding-left: 1.5rem; color: #333;">
+                            <li>✅ Todas as extensões</li>
+                            <li>✅ Acesso vitalício</li>
+                            <li>✅ Novas extensões grátis</li>
+                            <li>✅ Suporte VIP 24/7</li>
+                        </ul>
+                        <a href="https://pay.kiwify.com.br/V7yHmNR" target="_blank"
+                           style="display: inline-block; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); color: #1a1a1a; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 700; margin-top: 1rem; transition: transform 0.2s; box-shadow: 0 4px 12px rgba(255,215,0,0.4);">
+                            👑 Assinar VIP
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQPGu8l-JQqjHRubcAcYeUK7aIgH7vPIE",
+            authDomain: "nardoto-labs.web.app",
+            projectId: "tradutor-profissional-ai",
+            storageBucket: "tradutor-profissional-ai.firebasestorage.app",
+            messagingSenderId: "943297790089",
+            appId: "1:943297790089:web:75c2fa533bbe1310d2c658"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const extensions = [
+            { id: 'veo3-automator', name: 'VEO3 Automator', icon: '🎬', requiredFeature: 'veo3-automator' },
+            { id: 'wisk-automator', name: 'Wisk Automator', icon: '🎨', requiredFeature: 'wisk-automator' },
+            { id: 'tradutor-ai-unlimited', name: 'Tradutor AI Ilimitado', icon: '🌐', requiredFeature: 'tradutor-ai-unlimited' }
+        ];
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Carregar dados do usuário
+            const userRef = doc(db, 'users', user.uid);
+            const userSnap = await getDoc(userRef);
+
+            if (!userSnap.exists()) {
+                console.error('Usuário não encontrado no Firestore');
+                return;
+            }
+
+            const userData = userSnap.data();
+            console.log('🔍 DEBUG - Dados do Firestore:', userData);
+            console.log('🔍 DEBUG - UID:', user.uid);
+            console.log('🔍 DEBUG - Plan:', userData.plan);
+            console.log('🔍 DEBUG - isPro:', userData.isPro);
+            console.log('🔍 DEBUG - Features:', userData.features);
+            displayUserData(user, userData);
+        });
+
+        function displayUserData(user, userData) {
+            // Header
+            document.getElementById('userAvatar').src = user.photoURL || '';
+            document.getElementById('userName').textContent = userData.displayName || user.email;
+
+            const plan = (userData.plan || 'free').toUpperCase();
+            document.getElementById('userPlanBadge').textContent = plan;
+
+            // Stats
+            document.getElementById('statPlan').textContent = plan;
+            const activeExtensions = userData.features?.length || 0;
+            document.getElementById('statExtensions').textContent = activeExtensions;
+
+            // Trial
+            const trialEnd = userData.trialExpiresAt ? new Date(userData.trialExpiresAt) : null;
+            const now = new Date();
+
+            if (trialEnd && trialEnd > now) {
+                const daysLeft = Math.ceil((trialEnd - now) / (1000 * 60 * 60 * 24));
+                document.getElementById('statTrial').textContent = `${daysLeft} ${daysLeft === 1 ? 'dia' : 'dias'}`;
+
+                if (daysLeft <= 1) {
+                    document.getElementById('trialWarning').style.display = 'flex';
+                    document.getElementById('trialText').textContent = `⚠️ Trial expira em ${daysLeft} ${daysLeft === 1 ? 'dia' : 'dias'}!`;
+                }
+            } else {
+                document.getElementById('statTrial').textContent = 'Expirado';
+            }
+
+            // Extensions
+            const userFeatures = userData.features || [];
+            const hasAllFeatures = userFeatures.includes('all-features');
+            const extensionListHTML = extensions.map(ext => {
+                const hasAccess = hasAllFeatures || userFeatures.includes(ext.requiredFeature);
+                const isActive = hasAccess || (trialEnd && trialEnd > now);
+
+                return `
+                    <div class="extension-item ${isActive ? '' : 'locked'}">
+                        <div class="extension-icon-lg">${ext.icon}</div>
+                        <div class="extension-content">
+                            <h4>${ext.name}</h4>
+                            <span class="extension-status ${isActive ? 'status-active' : 'status-locked'}">
+                                ${isActive ? '✅ Ativo' : '🔒 Bloqueado'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('extensionList').innerHTML = extensionListHTML;
+
+            // Mostrar banner de upgrade se não for PRO (independente do trial)
+            if (!userData.isPro) {
+                document.getElementById('upgradeBanner').style.display = 'block';
+            }
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>
