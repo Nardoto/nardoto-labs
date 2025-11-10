@@ -204,7 +204,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         // Firebase Config - tradutor-profissional-ai
@@ -226,13 +226,9 @@
         const errorMessage = document.getElementById('errorMessage');
         const loadingMessage = document.getElementById('loadingMessage');
 
-        loginBtn.addEventListener('click', async () => {
-            try {
-                loginBtn.disabled = true;
-                loadingMessage.classList.add('show');
-                errorMessage.classList.remove('show');
-
-                const result = await signInWithPopup(auth, provider);
+        // Verificar se voltou do redirect
+        getRedirectResult(auth).then(async (result) => {
+            if (result) {
                 const user = result.user;
 
                 // Criar/atualizar documento do usuário
@@ -264,6 +260,22 @@
 
                 // Redirecionar para dashboard
                 window.location.href = 'dashboard.html';
+            }
+        }).catch((error) => {
+            console.error('Erro no redirect:', error);
+            errorMessage.textContent = `Erro ao fazer login: ${error.message}`;
+            errorMessage.classList.add('show');
+        });
+
+        loginBtn.addEventListener('click', async () => {
+            try {
+                loginBtn.disabled = true;
+                loadingMessage.classList.add('show');
+                errorMessage.classList.remove('show');
+
+                // Usar signInWithRedirect em vez de popup (COOP-friendly)
+                await signInWithRedirect(auth, provider);
+                // A página vai recarregar e o getRedirectResult acima vai processar
 
             } catch (error) {
                 console.error('Erro no login:', error);
