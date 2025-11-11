@@ -78,14 +78,14 @@
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .stat-card {
             background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
+            padding: 1rem;
+            border-radius: 8px;
             border: 1px solid #e1e4e8;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             transition: transform 0.2s, box-shadow 0.2s;
@@ -110,32 +110,34 @@
         }
 
         .extensions-section {
-            margin-bottom: 2.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .extensions-section h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
             color: #1a1a1a;
             font-weight: 700;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            border-bottom: 2px solid #667eea;
         }
 
         .extension-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
         }
 
         .extension-item {
             background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
+            padding: 1.25rem;
+            border-radius: 8px;
             border: 1px solid #e1e4e8;
             display: flex;
-            gap: 1.25rem;
+            gap: 1rem;
             align-items: center;
             position: relative;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -315,6 +317,55 @@
                             🚀 Acessar Agora
                         </a>
                     </div>
+
+                    <!-- Gerador de Roteiros -->
+                    <div class="extension-item">
+                        <div class="extension-icon-lg">📝</div>
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0 0 0.5rem 0; font-size: 1.25rem; font-weight: 600; color: #1a1a1a;">Gerador de Roteiros</h4>
+                            <p style="margin: 0 0 0.75rem 0; color: #666; font-size: 1rem; line-height: 1.5;">Crie roteiros profissionais automaticamente com IA</p>
+                            <span style="display: inline-block; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 600; background: #d4edda; color: #155724;">✅ Disponível Grátis</span>
+                        </div>
+                        <a href="https://roteiros.nardoto.com.br/" target="_blank" class="extension-install-btn">
+                            🚀 Acessar Agora
+                        </a>
+                    </div>
+
+                    <!-- Gerador de Áudio -->
+                    <div class="extension-item">
+                        <div class="extension-icon-lg">🎤</div>
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0 0 0.5rem 0; font-size: 1.25rem; font-weight: 600; color: #1a1a1a;">Gerador de Áudio (TTS)</h4>
+                            <p style="margin: 0 0 0.75rem 0; color: #666; font-size: 1rem; line-height: 1.5;">Converta texto em áudio profissional com vozes naturais</p>
+                            <span style="display: inline-block; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 600; background: #d4edda; color: #155724;">✅ Disponível Grátis</span>
+                        </div>
+                        <a href="https://roteiros.nardoto.com.br/tts" target="_blank" class="extension-install-btn">
+                            🚀 Acessar Agora
+                        </a>
+                    </div>
+
+                    <!-- Organizador de Pastas -->
+                    <div class="extension-item">
+                        <div class="extension-icon-lg">📁</div>
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0 0 0.5rem 0; font-size: 1.25rem; font-weight: 600; color: #1a1a1a;">Organizador de Pastas</h4>
+                            <p style="margin: 0 0 0.75rem 0; color: #666; font-size: 1rem; line-height: 1.5;">Copie e organize estruturas de pastas facilmente</p>
+                            <span style="display: inline-block; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 600; background: #d4edda; color: #155724;">✅ Disponível Grátis</span>
+                        </div>
+                        <a href="https://nardoto.com.br/script-copier-web/" target="_blank" class="extension-install-btn">
+                            🚀 Acessar Agora
+                        </a>
+                    </div>
+
+                    <!-- Juntar Áudios CapCut -->
+                    <div class="extension-item">
+                        <div class="extension-icon-lg">🔊</div>
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0 0 0.5rem 0; font-size: 1.25rem; font-weight: 600; color: #1a1a1a;">Juntar Áudios do CapCut</h4>
+                            <p style="margin: 0 0 0.75rem 0; color: #666; font-size: 1rem; line-height: 1.5;">Una múltiplos áudios do CapCut em um único arquivo</p>
+                            <span style="display: inline-block; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 600; background: #fff3cd; color: #856404;">🚧 Em Breve</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -401,8 +452,60 @@
                 requiredFeature: 'capcut-automator',
                 description: 'Automação completa do CapCut AI Creator'
             },
-            { id: 'wisk-automator', name: 'Wisk Automator', icon: '🎨', requiredFeature: 'wisk-automator' },
-            { id: 'tradutor-ai-unlimited', name: 'Tradutor AI Ilimitado', icon: '🌐', requiredFeature: 'tradutor-ai-unlimited' }
+            {
+                id: 'wisk-automator',
+                name: 'Wisk Automator',
+                icon: '🎨',
+                requiredFeature: 'wisk-automator'
+            },
+            {
+                id: 'tradutor-ai-unlimited',
+                name: 'Tradutor AI Ilimitado',
+                icon: '🌐',
+                requiredFeature: 'tradutor-ai-unlimited'
+            },
+            {
+                id: 'google-ai-studio-tts',
+                name: 'Gerador de Áudio (Google AI Studio)',
+                icon: '🎙️',
+                requiredFeature: 'google-ai-studio-tts',
+                description: 'Gere áudios automaticamente no Google AI Studio'
+            },
+            {
+                id: 'suno-auto-prompt',
+                name: 'Auto Prompt SUNO',
+                icon: '🎵',
+                requiredFeature: 'suno-auto-prompt',
+                description: 'Envio automático em massa de prompts no SUNO'
+            },
+            {
+                id: 'suno-mass-download',
+                name: 'Download em Massa - SUNO',
+                icon: '⬇️',
+                requiredFeature: 'suno-mass-download',
+                description: 'Baixe múltiplas músicas do SUNO automaticamente'
+            },
+            {
+                id: 'srt-optimizer',
+                name: 'Otimizador SRT Avançado',
+                icon: '📄',
+                requiredFeature: 'srt-optimizer',
+                description: 'Otimize e edite legendas SRT profissionalmente'
+            },
+            {
+                id: 'prompt-manager',
+                name: 'Prompt Manager (Multi-IA)',
+                icon: '🤖',
+                requiredFeature: 'prompt-manager',
+                description: 'Envio em massa de prompts no Gemini, ChatGPT e Claude'
+            },
+            {
+                id: 'capcut-prompt-extractor',
+                name: 'Extrator de Prompts - CapCut',
+                icon: '🔍',
+                requiredFeature: 'capcut-prompt-extractor',
+                description: 'Extraia prompts das imagens geradas no CapCut AI'
+            }
         ];
 
         onAuthStateChanged(auth, async (user) => {
