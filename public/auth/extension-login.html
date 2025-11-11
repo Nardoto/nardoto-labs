@@ -174,13 +174,15 @@
         const loginBtn = document.getElementById('loginBtn');
         const statusMessage = document.getElementById('statusMessage');
 
-        // Detectar qual extensão solicitou o login
+        // Detectar qual extensão solicitou o login e o redirect URL
         const urlParams = new URLSearchParams(window.location.search);
-        const extensionId = urlParams.get('extensionId');
-        const extensionName = extensionId ? `Extensão ${extensionId.substring(0, 8)}...` : 'Extensão Desconhecida';
+        const extensionName = urlParams.get('extension') || 'Extensão Chrome';
+        const redirectUrl = urlParams.get('redirect');
+
         document.getElementById('extensionName').innerHTML = `<span>🔌</span><span>${extensionName}</span>`;
 
-        console.log('🔍 Extension ID recebido:', extensionId);
+        console.log('🔍 Extension:', extensionName);
+        console.log('🔗 Redirect URL:', redirectUrl);
 
         loginBtn.addEventListener('click', async () => {
             try {
@@ -218,30 +220,26 @@
 
                 showStatus('✅ Login realizado com sucesso! Retornando para a extensão...', 'success');
 
-                console.log('✅ DEBUG - Enviando token para extensão via postMessage');
+                console.log('✅ Redirecionando para a extensão com token');
 
-                // Enviar dados para a extensão via postMessage
-                if (window.opener) {
-                    window.opener.postMessage({
-                        type: 'NARDOTO_LABS_AUTH',
+                // Redirecionar para a URL da extensão com os dados
+                if (redirectUrl) {
+                    const redirectParams = new URLSearchParams({
                         token: idToken,
-                        user: {
-                            uid: user.uid,
-                            email: user.email,
-                            displayName: user.displayName,
-                            photoURL: user.photoURL
-                        }
-                    }, '*');
+                        uid: user.uid,
+                        email: user.email,
+                        displayName: user.displayName || user.email,
+                        photoURL: user.photoURL || ''
+                    });
 
-                    console.log('✅ DEBUG - PostMessage enviado com sucesso');
+                    const finalUrl = `${redirectUrl}?${redirectParams.toString()}`;
+                    console.log('🔗 Redirecionando para:', finalUrl);
 
-                    // Fechar popup após 1 segundo
-                    setTimeout(() => {
-                        window.close();
-                    }, 1000);
+                    window.location.href = finalUrl;
                 } else {
-                    console.error('❌ DEBUG - window.opener não encontrado!');
-                    showStatus('❌ Erro: Não foi possível comunicar com a extensão', 'error');
+                    console.error('❌ Redirect URL não configurado!');
+                    showStatus('❌ Erro: Redirect URL não encontrado', 'error');
+                    loginBtn.disabled = false;
                 }
 
             } catch (error) {
