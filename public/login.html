@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Nardoto Labs</title>
+    <link rel="icon" type="image/png" href="logo-nardoto.png">
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -49,7 +50,7 @@
             border-radius: 20px;
             padding: 48px 40px;
             box-shadow: 0 0 60px rgba(232, 90, 42, 0.2);
-            max-width: 450px;
+            max-width: 420px;
             width: 100%;
             text-align: center;
             position: relative;
@@ -60,14 +61,16 @@
         .logo {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            border-radius: 50%;
             margin: 0 auto 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 0 40px rgba(232, 90, 42, 0.4);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         h1 {
@@ -118,35 +121,6 @@
             cursor: not-allowed;
         }
 
-        .features {
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: left;
-        }
-
-        .features h3 {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-align: center;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .feature-icon {
-            font-size: 20px;
-        }
-
         .error-message {
             background: rgba(220, 38, 38, 0.1);
             color: #FCA5A5;
@@ -174,27 +148,36 @@
             display: block;
         }
 
-        .back-link {
-            margin-top: 24px;
-            font-size: 14px;
+        .links {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .back-link a {
+        .links a {
             color: var(--primary);
             text-decoration: none;
             font-weight: 600;
+            font-size: 14px;
+            transition: opacity 0.3s;
         }
 
-        .back-link a:hover {
+        .links a:hover {
+            opacity: 0.8;
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="logo">🚀</div>
+        <div class="logo">
+            <img src="logo-nardoto.png" alt="Nardoto Labs">
+        </div>
         <h1>Nardoto Labs</h1>
-        <p class="subtitle">Faca login para acessar suas extensoes</p>
+        <p class="subtitle">Faca login para acessar suas ferramentas</p>
 
         <button id="loginBtn" class="google-btn">
             <svg width="18" height="18" viewBox="0 0 18 18">
@@ -209,24 +192,9 @@
         <div id="errorMessage" class="error-message"></div>
         <div id="loadingMessage" class="loading">Conectando...</div>
 
-        <div class="features">
-            <h3>Apos o login voce tera:</h3>
-            <div class="feature-item">
-                <span class="feature-icon">🎁</span>
-                <span>3 dias de trial completo gratis</span>
-            </div>
-            <div class="feature-item">
-                <span class="feature-icon">📱</span>
-                <span>Acesso a todas as extensoes</span>
-            </div>
-            <div class="feature-item">
-                <span class="feature-icon">💎</span>
-                <span>Dashboard centralizado</span>
-            </div>
-        </div>
-
-        <div class="back-link">
-            <a href="index.html">← Voltar para inicio</a>
+        <div class="links">
+            <a href="https://nardoto.com.br/navegador.html">Baixar Navegador com Extensoes</a>
+            <a href="https://nardoto.com.br">Visitar nardoto.com.br</a>
         </div>
     </div>
 
@@ -235,7 +203,6 @@
         import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Firebase Config - tradutor-profissional-ai
         const firebaseConfig = {
             apiKey: "AIzaSyBQPGu8l-JQqjHRubcAcYeUK7aIgH7vPIE",
             authDomain: "nardoto-labs.web.app",
@@ -254,20 +221,13 @@
         const errorMessage = document.getElementById('errorMessage');
         const loadingMessage = document.getElementById('loadingMessage');
 
-        // Verificar se voltou do redirect
         getRedirectResult(auth).then(async (result) => {
             if (result) {
                 const user = result.user;
-
-                // Criar/atualizar documento do usuario
                 const userRef = doc(db, 'users', user.uid);
                 const userSnap = await getDoc(userRef);
 
                 if (!userSnap.exists()) {
-                    // Novo usuario - criar com trial de 3 dias
-                    const trialEnd = new Date();
-                    trialEnd.setDate(trialEnd.getDate() + 3);
-
                     await setDoc(userRef, {
                         email: user.email,
                         displayName: user.displayName,
@@ -275,18 +235,15 @@
                         plan: 'free',
                         isPro: false,
                         features: [],
-                        trialExpiresAt: trialEnd.toISOString(),
                         createdAt: serverTimestamp(),
                         lastLogin: serverTimestamp()
                     });
                 } else {
-                    // Usuario existente - atualizar ultimo login
                     await setDoc(userRef, {
                         lastLogin: serverTimestamp()
                     }, { merge: true });
                 }
 
-                // Redirecionar para dashboard
                 window.location.href = 'dashboard.html';
             }
         }).catch((error) => {
@@ -300,11 +257,7 @@
                 loginBtn.disabled = true;
                 loadingMessage.classList.add('show');
                 errorMessage.classList.remove('show');
-
-                // Usar signInWithRedirect em vez de popup (COOP-friendly)
                 await signInWithRedirect(auth, provider);
-                // A pagina vai recarregar e o getRedirectResult acima vai processar
-
             } catch (error) {
                 console.error('Erro no login:', error);
                 errorMessage.textContent = `Erro ao fazer login: ${error.message}`;
