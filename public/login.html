@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Nardoto Labs</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,73 +12,101 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #E85A2A;
+            --primary-light: #F07040;
+            --bg-dark: #0A0A0A;
+            --card-dark: #1A1A1A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #9CA3AF;
+            --text-dark: #1F2937;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: radial-gradient(ellipse at center top, #2D1810 0%, #0A0A0A 70%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(232, 90, 42, 0.15) 0%, transparent 50%);
+            pointer-events: none;
         }
 
         .login-container {
-            background: white;
-            border-radius: 24px;
+            background: var(--card-dark);
+            border-radius: 20px;
             padding: 48px 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 0 60px rgba(232, 90, 42, 0.2);
             max-width: 450px;
             width: 100%;
             text-align: center;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             border-radius: 50%;
             margin: 0 auto 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 40px;
+            box-shadow: 0 0 40px rgba(232, 90, 42, 0.4);
         }
 
         h1 {
+            font-family: 'DM Serif Display', serif;
             font-size: 28px;
-            color: #1a1a1a;
+            color: var(--text-primary);
             margin-bottom: 12px;
-            font-weight: 700;
+            font-weight: 400;
         }
 
         .subtitle {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 15px;
             margin-bottom: 32px;
         }
 
         .google-btn {
             background: white;
-            border: 2px solid #dadce0;
+            border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             padding: 14px 24px;
             font-size: 15px;
             font-weight: 600;
-            color: #3c4043;
+            color: var(--text-dark);
             cursor: pointer;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
         }
 
         .google-btn:hover {
             background: #f8f9fa;
-            border-color: #4285f4;
-            box-shadow: 0 4px 12px rgba(66,133,244,0.2);
+            border-color: var(--primary);
+            box-shadow: 0 4px 16px rgba(232, 90, 42, 0.2);
+            transform: translateY(-2px);
         }
 
         .google-btn:active {
@@ -93,13 +121,13 @@
         .features {
             margin-top: 32px;
             padding-top: 24px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             text-align: left;
         }
 
         .features h3 {
             font-size: 14px;
-            color: #666;
+            color: var(--text-secondary);
             margin-bottom: 16px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -112,7 +140,7 @@
             gap: 12px;
             margin-bottom: 12px;
             font-size: 14px;
-            color: #444;
+            color: var(--text-secondary);
         }
 
         .feature-icon {
@@ -120,11 +148,11 @@
         }
 
         .error-message {
-            background: #fff3f3;
-            color: #c33;
+            background: rgba(220, 38, 38, 0.1);
+            color: #FCA5A5;
             padding: 14px;
             border-radius: 8px;
-            border-left: 3px solid #c33;
+            border-left: 3px solid #DC2626;
             margin-top: 16px;
             font-size: 13px;
             display: none;
@@ -137,7 +165,7 @@
 
         .loading {
             display: none;
-            color: #667eea;
+            color: var(--primary);
             margin-top: 16px;
             font-size: 14px;
         }
@@ -152,7 +180,7 @@
         }
 
         .back-link a {
-            color: #667eea;
+            color: var(--primary);
             text-decoration: none;
             font-weight: 600;
         }
@@ -166,7 +194,7 @@
     <div class="login-container">
         <div class="logo">🚀</div>
         <h1>Nardoto Labs</h1>
-        <p class="subtitle">Faça login para acessar suas extensões</p>
+        <p class="subtitle">Faca login para acessar suas extensoes</p>
 
         <button id="loginBtn" class="google-btn">
             <svg width="18" height="18" viewBox="0 0 18 18">
@@ -182,14 +210,14 @@
         <div id="loadingMessage" class="loading">Conectando...</div>
 
         <div class="features">
-            <h3>✨ Após o login você terá:</h3>
+            <h3>Apos o login voce tera:</h3>
             <div class="feature-item">
                 <span class="feature-icon">🎁</span>
-                <span>3 dias de trial completo grátis</span>
+                <span>3 dias de trial completo gratis</span>
             </div>
             <div class="feature-item">
                 <span class="feature-icon">📱</span>
-                <span>Acesso a todas as extensões</span>
+                <span>Acesso a todas as extensoes</span>
             </div>
             <div class="feature-item">
                 <span class="feature-icon">💎</span>
@@ -198,7 +226,7 @@
         </div>
 
         <div class="back-link">
-            <a href="index.html">← Voltar para início</a>
+            <a href="index.html">← Voltar para inicio</a>
         </div>
     </div>
 
@@ -231,12 +259,12 @@
             if (result) {
                 const user = result.user;
 
-                // Criar/atualizar documento do usuário
+                // Criar/atualizar documento do usuario
                 const userRef = doc(db, 'users', user.uid);
                 const userSnap = await getDoc(userRef);
 
                 if (!userSnap.exists()) {
-                    // Novo usuário - criar com trial de 3 dias
+                    // Novo usuario - criar com trial de 3 dias
                     const trialEnd = new Date();
                     trialEnd.setDate(trialEnd.getDate() + 3);
 
@@ -252,7 +280,7 @@
                         lastLogin: serverTimestamp()
                     });
                 } else {
-                    // Usuário existente - atualizar último login
+                    // Usuario existente - atualizar ultimo login
                     await setDoc(userRef, {
                         lastLogin: serverTimestamp()
                     }, { merge: true });
@@ -275,7 +303,7 @@
 
                 // Usar signInWithRedirect em vez de popup (COOP-friendly)
                 await signInWithRedirect(auth, provider);
-                // A página vai recarregar e o getRedirectResult acima vai processar
+                // A pagina vai recarregar e o getRedirectResult acima vai processar
 
             } catch (error) {
                 console.error('Erro no login:', error);

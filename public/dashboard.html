@@ -5,26 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Nardoto Labs</title>
     <link rel="icon" type="image/png" href="logo-nardoto.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/main.css">
     <style>
+        :root {
+            --primary: #E85A2A;
+            --primary-light: #F07040;
+            --bg-dark: #0A0A0A;
+            --bg-warm: #1A1410;
+            --card-dark: #1A1A1A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #9CA3AF;
+            --text-dark: #1F2937;
+            --border-light: rgba(255, 255, 255, 0.1);
+        }
+
         .dashboard {
             min-height: 100vh;
-            background: #f8f9fa;
+            background: radial-gradient(ellipse at center top, #2D1810 0%, #0A0A0A 70%);
             padding: 1rem;
+            position: relative;
+        }
+
+        .dashboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(232, 90, 42, 0.1) 0%, transparent 50%);
+            pointer-events: none;
         }
 
         .dashboard-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--card-dark);
             color: white;
             padding: 1rem;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 0.5rem;
+            border: 1px solid var(--border-light);
+            position: relative;
+            z-index: 1;
         }
 
         .user-info {
@@ -37,29 +64,32 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            border: 2px solid white;
+            border: 2px solid var(--primary);
         }
 
         .user-details h2 {
             margin: 0 0 0.125rem 0;
             font-size: 0.75rem;
+            color: var(--text-primary);
         }
 
         .user-plan {
             display: inline-block;
-            background: rgba(255,255,255,0.2);
+            background: rgba(232, 90, 42, 0.2);
             padding: 0.125rem 0.375rem;
             border-radius: 10px;
             font-size: 0.4375rem;
             font-weight: 600;
+            color: var(--primary);
+            border: 1px solid var(--primary);
         }
 
         .logout-btn {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
             color: white;
             padding: 0.375rem 0.75rem;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             font-size: 0.7rem;
@@ -67,12 +97,15 @@
         }
 
         .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
+            background: var(--primary);
+            border-color: var(--primary);
         }
 
         .dashboard-container {
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .stats-grid {
@@ -83,21 +116,21 @@
         }
 
         .stat-card {
-            background: white;
+            background: var(--card-dark);
             padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid #e1e4e8;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .stat-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            box-shadow: 0 0 30px rgba(232, 90, 42, 0.2);
         }
 
         .stat-label {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 0.875rem;
             margin-bottom: 0.5rem;
             font-weight: 500;
@@ -106,7 +139,7 @@
         .stat-value {
             font-size: 2rem;
             font-weight: 700;
-            color: #667eea;
+            color: var(--primary);
         }
 
         .extensions-section {
@@ -114,15 +147,16 @@
         }
 
         .extensions-section h3 {
+            font-family: 'DM Serif Display', serif;
             font-size: 1.25rem;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
-            color: #1a1a1a;
-            font-weight: 700;
+            color: var(--text-primary);
+            font-weight: 400;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            border-bottom: 2px solid #667eea;
+            border-bottom: 2px solid var(--primary);
         }
 
         .extension-list {
@@ -132,22 +166,22 @@
         }
 
         .extension-item {
-            background: white;
+            background: var(--card-dark);
             padding: 1.5rem;
             border-radius: 12px;
-            border: 1px solid #e1e4e8;
+            border: 1px solid var(--border-light);
             display: flex;
             gap: 1.25rem;
             align-items: center;
             position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: all 0.2s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
 
         .extension-item:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
-            border-color: #667eea;
+            box-shadow: 0 0 40px rgba(232, 90, 42, 0.2);
+            border-color: var(--primary);
         }
 
         .extension-item.locked {
@@ -164,7 +198,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.375rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary);
             color: white;
             padding: 0.625rem 1.25rem;
             border-radius: 8px;
@@ -176,11 +210,13 @@
             cursor: pointer;
             white-space: nowrap;
             flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(232, 90, 42, 0.3);
         }
 
         .extension-install-btn:hover {
+            background: var(--primary-light);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+            box-shadow: 0 8px 24px rgba(232, 90, 42, 0.4);
         }
 
         .extension-install-btn svg {
@@ -203,7 +239,11 @@
             margin: 0 0 0.5rem 0;
             font-size: 1.125rem;
             font-weight: 600;
-            color: #1a1a1a;
+            color: var(--text-primary);
+        }
+
+        .extension-content p {
+            color: var(--text-secondary);
         }
 
         .extension-status {
@@ -215,42 +255,119 @@
         }
 
         .status-active {
-            background: #d4edda;
-            color: #155724;
+            background: rgba(34, 197, 94, 0.2);
+            color: #22C55E;
+            border: 1px solid rgba(34, 197, 94, 0.3);
         }
 
         .status-locked {
-            background: #f8d7da;
-            color: #721c24;
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .upgrade-banner {
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            padding: 1rem;
-            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 1.5rem;
+            border-radius: 16px;
             text-align: center;
-            margin: 1rem 0;
+            margin: 1.5rem 0;
+            box-shadow: 0 0 40px rgba(232, 90, 42, 0.3);
         }
 
         .upgrade-banner h3 {
-            color: #1a1a1a;
+            font-family: 'DM Serif Display', serif;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
-            font-size: 0.875rem;
+            font-size: 1.25rem;
+            font-weight: 400;
+            border-bottom: none;
         }
 
         .trial-warning {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 0.5rem;
-            border-radius: 4px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            padding: 0.75rem;
+            border-radius: 8px;
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            color: #FBBF24;
         }
 
         .trial-warning-icon {
             font-size: 1rem;
+        }
+
+        .plan-card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 800px;
+            margin: 2rem auto 0;
+        }
+
+        .plan-card-upgrade {
+            background: var(--card-dark);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .plan-card-upgrade.featured {
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 40px rgba(232, 90, 42, 0.3);
+        }
+
+        .plan-card-upgrade h4 {
+            font-family: 'DM Serif Display', serif;
+            margin: 0 0 1rem 0;
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+
+        .plan-card-upgrade ul {
+            text-align: left;
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .plan-card-upgrade ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-card-upgrade .plan-btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(232, 90, 42, 0.3);
+        }
+
+        .plan-card-upgrade .plan-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(232, 90, 42, 0.4);
+        }
+
+        .popular-tag {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: inline-block;
+            font-size: 0.875rem;
         }
 
         @media (max-width: 768px) {
@@ -293,7 +410,7 @@
                 <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; width: 100%;">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <img src="logo-nardoto.png" alt="Nardoto Labs" style="height: 24px; width: 24px; object-fit: contain;">
-                        <h1 style="margin: 0; font-size: 0.75rem; font-weight: 700;">Nardoto Labs</h1>
+                        <h1 style="margin: 0; font-size: 0.875rem; font-weight: 700; font-family: 'DM Serif Display', serif; color: var(--text-primary);">Nardoto Labs</h1>
                     </div>
                     <div style="display: flex; align-items: center; gap: 1rem; margin-left: auto; flex-wrap: wrap;">
                         <div class="user-info">
@@ -312,7 +429,7 @@
                 <span class="trial-warning-icon">⏰</span>
                 <div>
                     <strong id="trialText">Seu trial expira em breve!</strong>
-                    <p style="margin: 0.25rem 0 0 0; font-size: 0.4375rem;">Assine um plano para continuar usando todas as extensões.</p>
+                    <p style="margin: 0.25rem 0 0 0; font-size: 0.75rem; color: var(--text-secondary);">Assine um plano para continuar usando todas as extensoes.</p>
                 </div>
             </div>
 
@@ -322,7 +439,7 @@
                     <div class="stat-value" id="statPlan">FREE</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Extensões Ativas</div>
+                    <div class="stat-label">Extensoes Ativas</div>
                     <div class="stat-value" id="statExtensions">0</div>
                 </div>
                 <div class="stat-card">
@@ -341,8 +458,8 @@
                         </div>
                         <div class="extension-content">
                             <h4>Tradutor Profissional AI</h4>
-                            <p style="margin: 0 0 0.5rem 0; color: #666; font-size: 0.875rem; line-height: 1.4;">Traduções precisas e profissionais com IA</p>
-                            <span class="extension-status status-active">✅ Disponível Grátis</span>
+                            <p style="margin: 0 0 0.5rem 0; font-size: 0.875rem; line-height: 1.4;">Traducoes precisas e profissionais com IA</p>
+                            <span class="extension-status status-active">Disponivel Gratis</span>
                         </div>
                         <a href="https://nardoto.com.br/tradutor-profissional-ai/" target="_blank" class="extension-install-btn">
                             🚀 Acessar
@@ -354,21 +471,21 @@
                         <div class="extension-icon-lg">📝</div>
                         <div class="extension-content">
                             <h4>Gerador de Roteiros</h4>
-                            <p style="margin: 0 0 0.5rem 0; color: #666; font-size: 0.875rem; line-height: 1.4;">Crie roteiros profissionais automaticamente com IA</p>
-                            <span class="extension-status status-active">✅ Disponível Grátis</span>
+                            <p style="margin: 0 0 0.5rem 0; font-size: 0.875rem; line-height: 1.4;">Crie roteiros profissionais automaticamente com IA</p>
+                            <span class="extension-status status-active">Disponivel Gratis</span>
                         </div>
                         <a href="https://roteiros.nardoto.com.br/" target="_blank" class="extension-install-btn">
                             🚀 Acessar
                         </a>
                     </div>
 
-                    <!-- Gerador de Áudio -->
+                    <!-- Gerador de Audio -->
                     <div class="extension-item">
                         <div class="extension-icon-lg">🎤</div>
                         <div class="extension-content">
-                            <h4>Gerador de Áudio (TTS)</h4>
-                            <p style="margin: 0 0 0.5rem 0; color: #666; font-size: 0.875rem; line-height: 1.4;">Converta texto em áudio profissional</p>
-                            <span class="extension-status status-active">✅ Disponível Grátis</span>
+                            <h4>Gerador de Audio (TTS)</h4>
+                            <p style="margin: 0 0 0.5rem 0; font-size: 0.875rem; line-height: 1.4;">Converta texto em audio profissional</p>
+                            <span class="extension-status status-active">Disponivel Gratis</span>
                         </div>
                         <a href="https://roteiros.nardoto.com.br/tts" target="_blank" class="extension-install-btn">
                             🚀 Acessar
@@ -380,68 +497,64 @@
                         <div class="extension-icon-lg">📁</div>
                         <div class="extension-content">
                             <h4>Organizador de Pastas</h4>
-                            <p style="margin: 0 0 0.5rem 0; color: #666; font-size: 0.875rem; line-height: 1.4;">Copie e organize estruturas de pastas facilmente</p>
-                            <span class="extension-status status-active">✅ Disponível Grátis</span>
+                            <p style="margin: 0 0 0.5rem 0; font-size: 0.875rem; line-height: 1.4;">Copie e organize estruturas de pastas facilmente</p>
+                            <span class="extension-status status-active">Disponivel Gratis</span>
                         </div>
                         <a href="https://nardoto.com.br/script-copier-web/" target="_blank" class="extension-install-btn">
                             🚀 Acessar
                         </a>
                     </div>
 
-                    <!-- Juntar Áudios CapCut -->
+                    <!-- Juntar Audios CapCut -->
                     <div class="extension-item">
                         <div class="extension-icon-lg">🔊</div>
                         <div class="extension-content">
-                            <h4>Juntar Áudios do CapCut</h4>
-                            <p style="margin: 0 0 0.5rem 0; color: #666; font-size: 0.875rem; line-height: 1.4;">Una múltiplos áudios em um único arquivo</p>
-                            <span class="extension-status" style="background: #fff3cd; color: #856404;">🚧 Em Breve</span>
+                            <h4>Juntar Audios do CapCut</h4>
+                            <p style="margin: 0 0 0.5rem 0; font-size: 0.875rem; line-height: 1.4;">Una multiplos audios em um unico arquivo</p>
+                            <span class="extension-status" style="background: rgba(251, 191, 36, 0.2); color: #FBBF24; border: 1px solid rgba(251, 191, 36, 0.3);">🚧 Em Breve</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="extensions-section">
-                <h3>📱 Suas Extensões Chrome</h3>
+                <h3>📱 Suas Extensoes Chrome</h3>
                 <div class="extension-list" id="extensionList">
-                    <!-- Será preenchido via JavaScript -->
+                    <!-- Sera preenchido via JavaScript -->
                 </div>
             </div>
 
             <div id="upgradeBanner" class="upgrade-banner" style="display: none;">
                 <h3>🚀 Upgrade para desbloquear tudo!</h3>
-                <p style="margin-bottom: 2rem; color: #333;">Escolha um plano e tenha acesso ilimitado a todas as extensões.</p>
+                <p style="margin-bottom: 1rem; color: rgba(255,255,255,0.9);">Escolha um plano e tenha acesso ilimitado a todas as extensoes.</p>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 800px; margin: 0 auto;">
-                    <!-- Plano BÁSICO -->
-                    <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                        <h4 style="margin: 0 0 1rem 0; color: #667eea; font-size: 1.5rem;">📦 BÁSICO</h4>
-                        <ul style="text-align: left; margin: 1rem 0; padding-left: 1.5rem; color: #333;">
-                            <li>✅ VEO3 Automator</li>
-                            <li>✅ CapCut Automator</li>
-                            <li>✅ Wisk Automator</li>
-                            <li>✅ Tradutor AI Ilimitado</li>
-                            <li>✅ Suporte prioritário</li>
+                <div class="plan-card-container">
+                    <!-- Plano BASICO -->
+                    <div class="plan-card-upgrade">
+                        <h4>📦 BASICO</h4>
+                        <ul>
+                            <li>VEO3 Automator</li>
+                            <li>CapCut Automator</li>
+                            <li>Wisk Automator</li>
+                            <li>Tradutor AI Ilimitado</li>
+                            <li>Suporte prioritario</li>
                         </ul>
-                        <a href="https://pay.kiwify.com.br/NtnupLV" target="_blank"
-                           style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 1rem; transition: transform 0.2s;">
-                            💳 Assinar BÁSICO
+                        <a href="https://pay.kiwify.com.br/NtnupLV" target="_blank" class="plan-btn">
+                            💳 Assinar BASICO
                         </a>
                     </div>
 
                     <!-- Plano VIP -->
-                    <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 3px solid #ffd700;">
-                        <div style="background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); color: #1a1a1a; padding: 0.5rem; border-radius: 6px; font-weight: 700; margin-bottom: 1rem;">
-                            ⭐ MAIS POPULAR
-                        </div>
-                        <h4 style="margin: 0 0 1rem 0; color: #ffd700; font-size: 1.5rem;">👑 VIP</h4>
-                        <ul style="text-align: left; margin: 1rem 0; padding-left: 1.5rem; color: #333;">
-                            <li>✅ Todas as extensões</li>
-                            <li>✅ Acesso vitalício</li>
-                            <li>✅ Novas extensões grátis</li>
-                            <li>✅ Suporte VIP 24/7</li>
+                    <div class="plan-card-upgrade featured">
+                        <div class="popular-tag">⭐ MAIS POPULAR</div>
+                        <h4>👑 VIP</h4>
+                        <ul>
+                            <li>Todas as extensoes</li>
+                            <li>Acesso vitalicio</li>
+                            <li>Novas extensoes gratis</li>
+                            <li>Suporte VIP 24/7</li>
                         </ul>
-                        <a href="https://pay.kiwify.com.br/V7yHmNR" target="_blank"
-                           style="display: inline-block; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); color: #1a1a1a; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 700; margin-top: 1rem; transition: transform 0.2s; box-shadow: 0 4px 12px rgba(255,215,0,0.4);">
+                        <a href="https://pay.kiwify.com.br/V7yHmNR" target="_blank" class="plan-btn">
                             👑 Assinar VIP
                         </a>
                     </div>
@@ -481,7 +594,7 @@
                 name: 'CapCut Automator',
                 icon: '🎞️',
                 requiredFeature: 'capcut-automator',
-                description: 'Automação completa do CapCut AI Creator'
+                description: 'Automacao completa do CapCut AI Creator'
             },
             {
                 id: 'wisk-automator',
@@ -497,28 +610,28 @@
             },
             {
                 id: 'google-ai-studio-tts',
-                name: 'Gerador de Áudio (Google AI Studio)',
+                name: 'Gerador de Audio (Google AI Studio)',
                 icon: '🎙️',
                 requiredFeature: 'google-ai-studio-tts',
-                description: 'Gere áudios automaticamente no Google AI Studio'
+                description: 'Gere audios automaticamente no Google AI Studio'
             },
             {
                 id: 'suno-auto-prompt',
                 name: 'Auto Prompt SUNO',
                 icon: '🎵',
                 requiredFeature: 'suno-auto-prompt',
-                description: 'Envio automático em massa de prompts no SUNO'
+                description: 'Envio automatico em massa de prompts no SUNO'
             },
             {
                 id: 'suno-mass-download',
                 name: 'Download em Massa - SUNO',
                 icon: '⬇️',
                 requiredFeature: 'suno-mass-download',
-                description: 'Baixe múltiplas músicas do SUNO automaticamente'
+                description: 'Baixe multiplas musicas do SUNO automaticamente'
             },
             {
                 id: 'srt-optimizer',
-                name: 'Otimizador SRT Avançado',
+                name: 'Otimizador SRT Avancado',
                 icon: '📄',
                 requiredFeature: 'srt-optimizer',
                 description: 'Otimize e edite legendas SRT profissionalmente'
@@ -545,12 +658,12 @@
                 return;
             }
 
-            // Carregar dados do usuário
+            // Carregar dados do usuario
             const userRef = doc(db, 'users', user.uid);
             const userSnap = await getDoc(userRef);
 
             if (!userSnap.exists()) {
-                console.error('Usuário não encontrado no Firestore');
+                console.error('Usuario nao encontrado no Firestore');
                 return;
             }
 
@@ -576,7 +689,7 @@
             const activeExtensions = userData.features?.length || 0;
             document.getElementById('statExtensions').textContent = activeExtensions;
 
-            // Trial - só mostrar para usuários FREE
+            // Trial - so mostrar para usuarios FREE
             const trialEnd = userData.trialExpiresAt ? new Date(userData.trialExpiresAt) : null;
             const now = new Date();
             const isFreeUser = plan === 'FREE';
@@ -585,7 +698,7 @@
                 const daysLeft = Math.ceil((trialEnd - now) / (1000 * 60 * 60 * 24));
                 document.getElementById('statTrial').textContent = `${daysLeft} ${daysLeft === 1 ? 'dia' : 'dias'}`;
 
-                // Só mostrar warning se for usuário FREE
+                // So mostrar warning se for usuario FREE
                 if (daysLeft <= 1 && isFreeUser) {
                     document.getElementById('trialWarning').style.display = 'flex';
                     document.getElementById('trialText').textContent = `⚠️ Trial expira em ${daysLeft} ${daysLeft === 1 ? 'dia' : 'dias'}!`;
@@ -607,11 +720,11 @@
                         <div class="extension-content">
                             <h4>${ext.name}</h4>
                             <span class="extension-status ${isActive ? 'status-active' : 'status-locked'}">
-                                ${isActive ? '✅ Ativo' : '🔒 Bloqueado'}
+                                ${isActive ? 'Ativo' : '🔒 Bloqueado'}
                             </span>
                         </div>
                         ${ext.chromeStoreUrl && isActive ? `
-                            <a href="${ext.chromeStoreUrl}" target="_blank" class="extension-install-btn" title="Instalar Extensão">
+                            <a href="${ext.chromeStoreUrl}" target="_blank" class="extension-install-btn" title="Instalar Extensao">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
                                 </svg>
@@ -624,7 +737,7 @@
 
             document.getElementById('extensionList').innerHTML = extensionListHTML;
 
-            // Mostrar banner de upgrade se não for PRO (independente do trial)
+            // Mostrar banner de upgrade se nao for PRO (independente do trial)
             if (!userData.isPro) {
                 document.getElementById('upgradeBanner').style.display = 'block';
             }
