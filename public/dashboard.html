@@ -125,31 +125,6 @@
             text-align: center;
         }
 
-        .status-card h2 {
-            font-family: 'DM Serif Display', serif;
-            font-size: 1.25rem;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            font-weight: 400;
-        }
-
-        .status-card p {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        .status-badge {
-            display: inline-block;
-            background: rgba(34, 197, 94, 0.2);
-            color: #22C55E;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-top: 1rem;
-            border: 1px solid rgba(34, 197, 94, 0.3);
-        }
-
         .plan-badge {
             display: inline-block;
             padding: 0.375rem 1rem;
@@ -165,10 +140,109 @@
             color: #1a1a1a;
         }
 
+        .plan-trial {
+            background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+            color: white;
+        }
+
         .plan-free {
             background: rgba(255, 255, 255, 0.1);
             color: var(--text-secondary);
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Card de Acesso */
+        .access-card {
+            background: var(--card-dark);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-light);
+            text-align: center;
+        }
+
+        .access-card.access-granted {
+            border-color: rgba(34, 197, 94, 0.5);
+        }
+
+        .access-card.access-denied {
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .access-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .access-card h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+        }
+
+        .access-card p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .access-status {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22C55E;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-blocked {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .trial-info {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #22C55E;
+        }
+
+        .trial-expired {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: #FBBF24;
+        }
+
+        /* Botao Assinar */
+        .subscribe-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .subscribe-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
         }
 
         .download-section {
@@ -301,9 +375,18 @@
                     <span id="userPlan" class="plan-badge plan-free">FREE</span>
                 </div>
             </div>
-            <h2>Login realizado com sucesso</h2>
-            <p>Voce esta autenticado nas extensoes do navegador</p>
-            <div class="status-badge">Conectado</div>
+        </div>
+
+        <!-- Card de Status de Acesso -->
+        <div id="accessCard" class="access-card">
+            <div id="accessIcon" class="access-icon">⏳</div>
+            <h3 id="accessTitle">Verificando acesso...</h3>
+            <p id="accessDesc">Aguarde enquanto verificamos seu plano</p>
+            <div id="accessStatus" class="access-status status-active" style="display: none;"></div>
+            <div id="trialInfo" class="trial-info" style="display: none;"></div>
+            <a id="subscribeBtn" href="https://pay.kiwify.com.br/V7yHmNR" target="_blank" class="subscribe-btn" style="display: none;">
+                👑 Assinar Plano VIP
+            </a>
         </div>
 
         <div class="download-section">
@@ -368,13 +451,99 @@
 
             if (userSnap.exists()) {
                 const userData = userSnap.data();
-                const plan = (userData.plan || 'free').toUpperCase();
-                const planEl = document.getElementById('userPlan');
-
-                planEl.textContent = plan === 'VIP' ? 'VIP' : 'FREE';
-                planEl.className = 'plan-badge ' + (plan === 'VIP' ? 'plan-vip' : 'plan-free');
+                updateAccessStatus(userData);
+            } else {
+                // Usuario sem dados - mostrar como FREE
+                showFreeStatus();
             }
         });
+
+        function updateAccessStatus(userData) {
+            const plan = (userData.plan || 'free').toLowerCase();
+            const planEl = document.getElementById('userPlan');
+            const accessCard = document.getElementById('accessCard');
+            const accessIcon = document.getElementById('accessIcon');
+            const accessTitle = document.getElementById('accessTitle');
+            const accessDesc = document.getElementById('accessDesc');
+            const accessStatus = document.getElementById('accessStatus');
+            const trialInfo = document.getElementById('trialInfo');
+            const subscribeBtn = document.getElementById('subscribeBtn');
+
+            // Verificar trial
+            const trialEnd = userData.trialExpiresAt ? new Date(userData.trialExpiresAt) : null;
+            const now = new Date();
+            const hasActiveTrial = trialEnd && trialEnd > now;
+            const daysLeft = hasActiveTrial ? Math.ceil((trialEnd - now) / (1000 * 60 * 60 * 24)) : 0;
+
+            if (plan === 'vip') {
+                // Plano VIP - Acesso ilimitado
+                planEl.textContent = 'VIP';
+                planEl.className = 'plan-badge plan-vip';
+
+                accessCard.className = 'access-card access-granted';
+                accessIcon.textContent = '👑';
+                accessTitle.textContent = 'Acesso VIP Ilimitado';
+                accessDesc.textContent = 'Voce tem acesso completo a todas as extensoes';
+                accessStatus.textContent = 'Ativo';
+                accessStatus.className = 'access-status status-active';
+                accessStatus.style.display = 'inline-block';
+                trialInfo.style.display = 'none';
+                subscribeBtn.style.display = 'none';
+
+            } else if (hasActiveTrial) {
+                // Trial ativo
+                planEl.textContent = 'TRIAL';
+                planEl.className = 'plan-badge plan-trial';
+
+                accessCard.className = 'access-card access-granted';
+                accessIcon.textContent = '⏱️';
+                accessTitle.textContent = 'Periodo de Teste Ativo';
+                accessDesc.textContent = 'Voce tem acesso temporario a todas as extensoes';
+                accessStatus.textContent = 'Ativo';
+                accessStatus.className = 'access-status status-active';
+                accessStatus.style.display = 'inline-block';
+                trialInfo.textContent = `⏳ ${daysLeft} ${daysLeft === 1 ? 'dia restante' : 'dias restantes'} de teste`;
+                trialInfo.className = 'trial-info';
+                trialInfo.style.display = 'block';
+                subscribeBtn.style.display = 'inline-flex';
+
+            } else {
+                // FREE sem trial ou trial expirado
+                showFreeStatus(trialEnd !== null);
+            }
+        }
+
+        function showFreeStatus(trialExpired = false) {
+            const planEl = document.getElementById('userPlan');
+            const accessCard = document.getElementById('accessCard');
+            const accessIcon = document.getElementById('accessIcon');
+            const accessTitle = document.getElementById('accessTitle');
+            const accessDesc = document.getElementById('accessDesc');
+            const accessStatus = document.getElementById('accessStatus');
+            const trialInfo = document.getElementById('trialInfo');
+            const subscribeBtn = document.getElementById('subscribeBtn');
+
+            planEl.textContent = 'FREE';
+            planEl.className = 'plan-badge plan-free';
+
+            accessCard.className = 'access-card access-denied';
+            accessIcon.textContent = '🔒';
+            accessTitle.textContent = 'Acesso Bloqueado';
+            accessDesc.textContent = 'Assine o plano VIP para usar as extensoes';
+            accessStatus.textContent = 'Bloqueado';
+            accessStatus.className = 'access-status status-blocked';
+            accessStatus.style.display = 'inline-block';
+
+            if (trialExpired) {
+                trialInfo.textContent = '⚠️ Seu periodo de teste expirou';
+                trialInfo.className = 'trial-info trial-expired';
+                trialInfo.style.display = 'block';
+            } else {
+                trialInfo.style.display = 'none';
+            }
+
+            subscribeBtn.style.display = 'inline-flex';
+        }
 
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             await signOut(auth);
